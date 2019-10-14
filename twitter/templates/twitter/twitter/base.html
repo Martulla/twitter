@@ -15,7 +15,7 @@
    <header class="site-header">
      <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
        <div class="container">
-         <a class="navbar-brand mr-4" href="{% url 'twitter/twitter:index' %}">Twitter clone</a>
+         <a class="navbar-brand mr-4" href="{% url 'twitter/twitter:index' %}">Twitter clone </a>
          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
          <span class="navbar-toggler-icon"></span>
          </button>
@@ -26,7 +26,8 @@
            <!-- Navbar Right Side -->
            <div class="navbar-nav">
                {% if user.is_authenticated %}
-                  <button><a class="nav-item nav-link" href="{% url 'twitter/twitter:compose' user.id %}">New Post</a></button>
+                   <a class="nav-item nav-link" href="{% url 'twitter/twitter:message' user.id  %}">New Message</a>
+                   <a class="nav-item nav-link" href="{% url 'twitter/twitter:compose' user.id  %}">New Post</a>
                    <a class="nav-item nav-link" href="{% url 'twitter/twitter:logout' %}">Wyloguj się</a>
                {% endif %}
            </div>

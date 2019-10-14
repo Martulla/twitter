@@ -5,41 +5,33 @@
 {% block content %}
 
     <div class="content-section">
-
         <form method="POST">
-
             {% csrf_token %}
-
             <fieldset class="form-group">
-
-                <legend class="border-bottom mb-4">What's going on, {{user}}?</legend>
-
                 {{ form|crispy }}
-
             </fieldset>
-
             <div class="form-group">
-
-                <button class="btn btn-outline-info" type="submit">Post</button>
-
+                <button class="btn btn-outline-info" type="submit">Send</button>
             </div>
-
         </form>
-
     </div>
-    <div class="content-section">
-        <p> Posts : </p>
+     <div class="content-section">
+        <p> Messages : </p>
         <table class="table table-striped">
             <thead>
                 <tr>
                     <th scope="col"> Data </th>
-                    <th scope="col"> Post </th>
+                    <th scope="col"> Author </th>
+                    <th scope="col"> Subject </th>
+                    <th scope="col"> Message </th>
                 </tr>
             </thead>
-            {% for post in posts %}
+            {% for message in messages %}
                 <tr>
-                    <td>{{ post.creation_date|date:"SHORT_DATE_FORMAT" }}</td>
-                    <td>{{ post.content }}</td>
+                    <td>{{ message.date_sent |date:"SHORT_DATE_FORMAT" }}</td>
+                    <td>{{ message.from_user.author }}</td>
+                    <td>{{ message.subject }}</td>
+                    <td>{{ message.content }}</td>
                 </tr>
             {% endfor %}
         </table>

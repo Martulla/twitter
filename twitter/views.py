@@ -12,7 +12,8 @@ from twitter import models
 from twitter import forms
 
 # Create your views here.
-from twitter.models import Tweet
+from twitter.forms import TweetForm, MessageModelForm
+from twitter.models import Tweet, Message
 
 
 class LoginNewView(View):
@@ -45,6 +46,8 @@ class AddUserView(View):
         if form.is_valid():
             user_name = form.cleaned_data['username']
             form.save()
+            user = User.objects.get(username=user_name)
+            login(request, user)
             return redirect('twitter/twitter:index')
         ctx = {'form': form}
         return render(request, 'twitter/signup.html', ctx)
@@ -63,13 +66,58 @@ class MainWebpageView(views.View):
         return render(request, 'twitter/index.html', ctx)
 
 
-class TweetComposeView(LoginRequiredMixin, CreateView):
-    model = models.Tweet
-    # template_name = "tweet_form.html" nie potrzebujemy template_name ponieważ mamy template odpowiednio nazwany i Django sam go wyszuka.
-    form_class = forms.TweetForm  # normalnie nie wymaga formularza ale tu zmienaimy wiget na textarea, żeby mieć większe okienko do wpisywania treści tweeta
-    success_url = reverse_lazy('twitter/twitter:index')
+class TweetComposeView(LoginRequiredMixin, View):
+    def get(self, request, id):
+        user = id
+        # template_name = "tweet_form.html" nie potrzebujemy template_name ponieważ mamy template odpowiednio nazwany i Django sam go wyszuka.
+        form = TweetForm()  # normalnie nie wymaga formularza ale tu zmienaimy wiget na textarea, żeby mieć większe okienko do wpisywania treści tweet
+        user_id = User.objects.get(id=user)
+        posts = Tweet.objects.filter(author=user_id)
+        ctx = {'form': form,
+               'posts': posts}
+        return render(request, 'twitter/tweet_form.html', ctx)
 
-    def form_valid(self, form):
-        form.instance.author = self.request.user  # wyciagamy autora z requesta, nie może go sam wpisywać bo mógłby się podszyć pod kogoś.
-        return super().form_valid(form)
+    def post(self, request, id):
+        form = TweetForm(request.POST)
+        if form.is_valid():
+            form.instance.author = request.user  # wyciagamy autora z requesta, nie może go sam wpisywać bo mógłby się podszyć pod kogoś.
+            form.save()
+            return redirect('twitter/twitter:index')
+
+
+class MessageView(LoginRequiredMixin, View):
+    def get(self, request, id):
+        form = MessageModelForm()
+        user = id
+        user_id = User.objects.get(id=user)
+        message_author = Tweet.objects.filter(author=user_id)
+        for m_a in message_author:
+            m_a = message_author[0]
+        messages = Message.objects.filter(to_user=user)
+        ctx = {'form': form,
+               'messages': messages}
+        return render(request, "twitter/message.html", ctx)
+
+    def post(self, request, id):
+        form = MessageModelForm(request.POST)
+        if form.is_valid():
+            to_user_from_form = form.cleaned_data['to_user']
+            subject_from_form = form.cleaned_data['subject']
+            content_from_form = form.cleaned_data['content']
+            user_from_form = request.user
+            new_user = Tweet.objects.filter(author=user_from_form)
+            if new_user is not None:
+                for user_to_save in new_user:
+                    user_to_save = new_user[0]
+            else:
+                user_to_save = Tweet(author=user_from_form)
+                user_to_save.save()
+
+            new_message = Message(to_user=to_user_from_form,
+                                  from_user=user_to_save,
+                                  subject=subject_from_form,
+                                  content=content_from_form)
+            new_message.save()
+            return redirect('twitter/twitter:index')
+        return render(request, "twitter/message.html")
 

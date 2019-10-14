@@ -1,0 +1,13 @@
+
+
+{% load crispy_forms_tags %}
+{% block content %}
+    <h4> Logowanie </h4>
+    <form method="post">
+        {% csrf_token %}
+        {{ form  | crispy }}
+        <input type="submit" value="zaloguj">
+    </form>
+    <h4> Jesteś nowy? <a href="{% url 'twitter/twitter:registration' %}"> Zarejestruj się </a> </h4>
+{% endblock %}
+
