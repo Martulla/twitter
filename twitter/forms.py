@@ -20,3 +20,5 @@ class MessageModelForm(forms.ModelForm):
     class Meta:
         model = Message
         exclude = ['date_sent', 'from_user', 'status']
+
+

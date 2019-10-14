@@ -28,6 +28,6 @@ class Message(models.Model):
     subject = models.CharField(max_length=40)
     content = models.TextField(max_length=200)
     date_sent = models.DateTimeField(auto_now_add=True)
-    status = models.BooleanField
+    status = models.BooleanField(default=False)
 
 

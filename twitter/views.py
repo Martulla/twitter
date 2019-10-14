@@ -120,6 +120,8 @@ class MessageView(LoginRequiredMixin, View):
 class OpenMessageView(LoginRequiredMixin, View):
     def get(self, request, message_id):
         message = Message.objects.get(id=message_id)
+        message.status = True
+        message.save()
         ctx = {'subject': message.subject,
                'content': message.content}
         return render(request, "twitter/openmessage.html", ctx)
