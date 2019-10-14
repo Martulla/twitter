@@ -5,12 +5,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django import views
-from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import CreateView
 
 from twitter import models
-from twitter import forms
 
 # Create your views here.
 from twitter.forms import TweetForm, MessageModelForm
@@ -103,7 +100,6 @@ class MessageView(LoginRequiredMixin, View):
             for user_to_save in new_user:
                 user_to_save = new_user[0]
                 from_user_from_form = new_user[0].author
-                print('kupa')
                 if from_user_from_form != to_user_from_form:
                     print(user_to_save, to_user_from_form)
                     new_message = Message(to_user=to_user_from_form,
