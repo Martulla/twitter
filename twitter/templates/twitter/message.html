@@ -1,4 +1,4 @@
-{% extends 'twitter/twitter/base.html' %}
+{% extends 'twitter/twitter/base2.html' %}
 
 {% load crispy_forms_tags %}
 
@@ -14,28 +14,5 @@
                 <button class="btn btn-outline-info" type="submit">Send</button>
             </div>
         </form>
-    </div>
-     <div class="content-section">
-        <p> Your's Messages : </p>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th scope="col"> Data </th>
-                    <th scope="col"> Author </th>
-                    <th scope="col"> Subject </th>
-                    <th scope="col"> Message </th>
-                    <th scope="col"> Status </th>
-                </tr>
-            </thead>
-            {% for message in messages %}
-                <tr>
-                    <td>{{ message.date_sent |date:"SHORT_DATE_FORMAT" }}</td>
-                    <td>{{ message.from_user.author }}</td>
-                    <td><a href="{% url 'twitter/twitter:openmessage' message.id %}"> {{ message.subject }} </a></td>
-                    <td><a href="{% url 'twitter/twitter:openmessage' message.id %}"> {{ message.content }} </a></td>
-                    <td>{{ message.status }}</td>
-                </tr>
-            {% endfor %}
-        </table>
     </div>
 {% endblock content %}

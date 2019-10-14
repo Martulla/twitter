@@ -1,0 +1,27 @@
+{% extends 'twitter/twitter/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<div class="content-section">
+        <p> Send Messages : </p>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col"> Data </th>
+                    <th scope="col"> To user </th>
+                    <th scope="col"> Subject </th>
+                    <th scope="col"> Message </th
+                </tr>
+            </thead>
+            {% for message in messages %}
+                <tr>
+                    <td>{{ message.date_sent |date:"SHORT_DATE_FORMAT" }}</td>
+                    <td>{{ message.to_user }}</td>
+                    <td><a href="{% url 'twitter/twitter:openmessage' message.id %}"> {{ message.subject }} </a></td>
+                    <td><a href="{% url 'twitter/twitter:openmessage' message.id %}"> {{ message.content }} </a></td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock content %}

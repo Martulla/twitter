@@ -89,9 +89,7 @@ class TweetComposeView(LoginRequiredMixin, View):
 class MessageView(LoginRequiredMixin, View):
     def get(self, request, id):
         form = MessageModelForm()
-        messages = Message.objects.filter(to_user=id)
-        ctx = {'form': form,
-               'messages': messages}
+        ctx = {'form': form}
         return render(request, "twitter/message.html", ctx)
 
     def post(self, request, id):
@@ -125,3 +123,17 @@ class OpenMessageView(LoginRequiredMixin, View):
         ctx = {'subject': message.subject,
                'content': message.content}
         return render(request, "twitter/openmessage.html", ctx)
+
+
+class ReceivedMessageView(LoginRequiredMixin, View):
+    def get (self, request, user_id):
+        messages_to_user = Message.objects.filter(to_user=user_id)
+        ctx = {'messages': messages_to_user}
+        return render(request, "twitter/receivedmessage.html", ctx)
+
+
+class SendMessageView(LoginRequiredMixin, View):
+    def get(self, request, user_id):
+        messages_from_user = Message.objects.filter(from_user=user_id)
+        ctx = {'messages': messages_from_user}
+        return render(request, "twitter/sendmessage.html", ctx)
