@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -88,12 +89,7 @@ class TweetComposeView(LoginRequiredMixin, View):
 class MessageView(LoginRequiredMixin, View):
     def get(self, request, id):
         form = MessageModelForm()
-        user = id
-        user_id = User.objects.get(id=user)
-        message_author = Tweet.objects.filter(author=user_id)
-        for m_a in message_author:
-            m_a = message_author[0]
-        messages = Message.objects.filter(to_user=user)
+        messages = Message.objects.filter(to_user=id)
         ctx = {'form': form,
                'messages': messages}
         return render(request, "twitter/message.html", ctx)
@@ -109,6 +105,8 @@ class MessageView(LoginRequiredMixin, View):
             if new_user is not None:
                 for user_to_save in new_user:
                     user_to_save = new_user[0]
+                    if user_to_save.author == user_from_form:
+                        return redirect('twitter/twitter:message', id)
             else:
                 user_to_save = Tweet(author=user_from_form)
                 user_to_save.save()
@@ -120,4 +118,3 @@ class MessageView(LoginRequiredMixin, View):
             new_message.save()
             return redirect('twitter/twitter:index')
         return render(request, "twitter/message.html")
-
