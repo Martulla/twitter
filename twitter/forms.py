@@ -19,4 +19,4 @@ class TweetForm(forms.ModelForm):
 class MessageModelForm(forms.ModelForm):
     class Meta:
         model = Message
-        exclude = ['date_sent', 'from_user']
+        exclude = ['date_sent', 'from_user', 'status']

@@ -24,14 +24,16 @@
                     <th scope="col"> Author </th>
                     <th scope="col"> Subject </th>
                     <th scope="col"> Message </th>
+                    <th scope="col"> Status </th>
                 </tr>
             </thead>
             {% for message in messages %}
                 <tr>
                     <td>{{ message.date_sent |date:"SHORT_DATE_FORMAT" }}</td>
                     <td>{{ message.from_user.author }}</td>
-                    <td>{{ message.subject }}</td>
-                    <td>{{ message.content }}</td>
+                    <td><a href="{% url 'twitter/twitter:openmessage' message.id %}"> {{ message.subject }} </a></td>
+                    <td><a href="{% url 'twitter/twitter:openmessage' message.id %}"> {{ message.content }} </a></td>
+                    <td>{{ message.status }}</td>
                 </tr>
             {% endfor %}
         </table>

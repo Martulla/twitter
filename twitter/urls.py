@@ -9,5 +9,6 @@ urlpatterns = [
     path('login', views.LoginNewView.as_view(), name='login'),
     path('registration', views.AddUserView.as_view(), name='registration'),
     path('logout', views.LogoutView.as_view(), name='logout'),
-    path('message/<int:id>', views.MessageView.as_view(), name="message"),
+    path('message/<int:id>', views.MessageView.as_view(), name='message'),
+    path('openmessage/<int:message_id>', views.OpenMessageView.as_view(), name='openmessage'),
 ]

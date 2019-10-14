@@ -102,19 +102,24 @@ class MessageView(LoginRequiredMixin, View):
             content_from_form = form.cleaned_data['content']
             user_from_form = request.user
             new_user = Tweet.objects.filter(author=user_from_form)
-            if new_user is not None:
-                for user_to_save in new_user:
-                    user_to_save = new_user[0]
-                    if user_to_save.author == user_from_form:
-                        return redirect('twitter/twitter:message', id)
-            else:
-                user_to_save = Tweet(author=user_from_form)
-                user_to_save.save()
+            for user_to_save in new_user:
+                user_to_save = new_user[0]
+                from_user_from_form = new_user[0].author
+                print('kupa')
+                if from_user_from_form != to_user_from_form:
+                    print(user_to_save, to_user_from_form)
+                    new_message = Message(to_user=to_user_from_form,
+                                          from_user=user_to_save,
+                                          subject=subject_from_form,
+                                          content=content_from_form)
+                    new_message.save()
+                    return redirect('twitter/twitter:index')
+                return redirect('twitter/twitter:message', id)
 
-            new_message = Message(to_user=to_user_from_form,
-                                  from_user=user_to_save,
-                                  subject=subject_from_form,
-                                  content=content_from_form)
-            new_message.save()
-            return redirect('twitter/twitter:index')
-        return render(request, "twitter/message.html")
+
+class OpenMessageView(LoginRequiredMixin, View):
+    def get(self, request, message_id):
+        message = Message.objects.get(id=message_id)
+        ctx = {'subject': message.subject,
+               'content': message.content}
+        return render(request, "twitter/openmessage.html", ctx)
