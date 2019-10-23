@@ -31,3 +31,13 @@ class Message(models.Model):
     status = models.BooleanField(default=False)
 
 
+class Comment(models.Model):
+    comment_author = models.ForeignKey(User, on_delete=models.CASCADE)
+    comment_text = models.CharField(max_length=TWITTER_MAXIMUM_COMMENT_LENGTH)
+    comment_date = models.DateTimeField(auto_now_add=True)
+    comment_tweet = models.ForeignKey(Tweet, on_delete=True)
+
+    def __str__(self):
+        return '[{}] TWEET by {}: {}'.format(self.comment_date, self.comment_author, self.comment_text[:20])
+
+

@@ -14,6 +14,8 @@
                <p class="article-content">{{ tweet.content }}</p>
            </div>
        </article>
+       <a href="{%  url 'twitter/twitter:showcomments' tweet.id %}"> Show comments </a>
+       <button> <a href="{% url 'twitter/twitter:comment' tweet.id%}"> Add comment </a> </button>
     {%empty%}
     <p> Sorry, not tweet yet</p>
    {% endfor %}

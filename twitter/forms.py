@@ -22,3 +22,9 @@ class MessageModelForm(forms.ModelForm):
         exclude = ['date_sent', 'from_user', 'status']
 
 
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = models.Comment
+        fields = ['comment_text']
+
+

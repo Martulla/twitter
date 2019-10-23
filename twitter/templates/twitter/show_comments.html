@@ -1,0 +1,22 @@
+{% extends 'twitter/twitter/base.html' %}
+{% block content %}
+    <p>
+        <button> <a href="{% url 'twitter/twitter:comment' tweet.id%}"> Add new comment </a> </button>
+    </p>
+    Comments for tweet: "{{ tweet.content }}":
+    {% for comment in comments %}
+        <article class="media content-section">
+               <div class="media-body">
+                 <div class="article-metadata">
+                           <a href="#">
+                               <small class="text-muted">{{ comment.comment_date|date:"F d, Y" }}</small>
+                           </a>
+                           <a href="#">
+                               <small class="text-muted">by {{ comment.comment_author }}</small>
+                           </a>
+                       </div>
+                       <p class="article-content">{{ comment.comment_text }}</p>
+                   </div>
+        </article>
+    {% endfor %}
+{% endblock %}

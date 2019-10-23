@@ -13,4 +13,6 @@ urlpatterns = [
     path('openmessage/<int:message_id>', views.OpenMessageView.as_view(), name='openmessage'),
     path('receivedmessage/<int:user_id>', views.ReceivedMessageView.as_view(), name='receivedmessage'),
     path('sendmessage/<int:user_id>', views.SendMessageView.as_view(), name='sendmessage'),
+    path('comment/<int:tweet_id>', views.CommentView.as_view(), name='comment'),
+    path('comments/<int:tweet_id>', views.ShowComments.as_view(), name='showcomments')
 ]
