@@ -10,8 +10,8 @@ from django.views import View
 from twitter import models
 
 # Create your views here.
-from twitter.forms import TweetForm, MessageModelForm
-from twitter.models import Tweet, Message
+from twitter.forms import TweetForm, MessageModelForm, CommentForm
+from twitter.models import Tweet, Message, Comment
 
 
 class LoginNewView(View):
@@ -122,7 +122,7 @@ class OpenMessageView(LoginRequiredMixin, View):
 
 
 class ReceivedMessageView(LoginRequiredMixin, View):
-    def get (self, request, user_id):
+    def get(self, request, user_id):
         messages_to_user = Message.objects.filter(to_user=user_id)
         ctx = {'messages': messages_to_user}
         return render(request, "twitter/receivedmessage.html", ctx)
@@ -133,3 +133,32 @@ class SendMessageView(LoginRequiredMixin, View):
         messages_from_user = Message.objects.filter(from_user=user_id)
         ctx = {'messages': messages_from_user}
         return render(request, "twitter/sendmessage.html", ctx)
+
+
+class CommentView(LoginRequiredMixin, View):
+    def get(self, request, tweet_id):
+        form = CommentForm()
+        ctx = {'form': form}
+        return render(request, 'twitter/comment_form.html', ctx)
+
+    def post(self, request, tweet_id):
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment_author_from_form = User.objects.get(id=request.user.id)
+            comment_text_from_form = form.cleaned_data['comment_text']
+            comment_tweet_from_form = Tweet.objects.get(pk=tweet_id)
+            new_comment = Comment(comment_author=comment_author_from_form,
+                                  comment_text=comment_text_from_form,
+                                  comment_tweet=comment_tweet_from_form)
+            new_comment.save()
+            return redirect('twitter/twitter:index')
+        return redirect('twitter/twitter:comment', tweet_id)
+
+
+class ShowComments(LoginRequiredMixin, View):
+    def get(self, request, tweet_id):
+        tweet = models.Tweet.objects.get(pk=tweet_id)
+        comments = Comment.objects.filter(comment_tweet=tweet_id).order_by('-comment_date')
+        ctx = {'tweet': tweet,
+               'comments': comments}
+        return render(request, 'twitter/show_comments.html', ctx)
